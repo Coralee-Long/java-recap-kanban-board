@@ -1,5 +1,7 @@
 package spring.recapprojectspringtodo.controller;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import spring.recapprojectspringtodo.model.Todo;
 import spring.recapprojectspringtodo.service.TodoService;
@@ -50,8 +52,11 @@ public class Controller {
      * @return The saved Todo object.
      */
     @PostMapping
-    public Todo createTodo(@RequestBody Todo todo) {
-        return service.createTodo(todo.description(), todo.status());
+    public ResponseEntity<Todo> createTodo(@RequestBody Todo todo) {
+        Todo savedTodo = service.createTodo(todo.description(), todo.status());
+        return ResponseEntity
+                .status(HttpStatus.CREATED) // Return 201 Created
+                .body(savedTodo); // Include the created resource in the response body
     }
 
     /**
@@ -72,8 +77,9 @@ public class Controller {
      * @param id The ID of the Todo to delete.
      */
     @DeleteMapping("/{id}")
-    public void deleteTodo(@PathVariable String id) {
-        service.deleteTodoById(id);
+    public ResponseEntity<Void> deleteTodo(@PathVariable String id) {
+        service.deleteTodoById(id); // Perform the delete operation
+        return ResponseEntity.noContent().build(); // Return 204 No Content
     }
 }
 
